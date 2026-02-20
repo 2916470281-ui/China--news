@@ -1,0 +1,21 @@
+name: AutoUpdate
+on:
+  schedule:
+    - cron: '0 22 * * *' # 每天早上6点运行
+  workflow_dispatch:
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - run: pip install requests
+      - run: python main.py
+      - run: |
+          git config --global user.name "Robot"
+          git config --global user.email "bot@github.com"
+          git add index.html
+          git commit -m "Update" || exit 0
+          git push
